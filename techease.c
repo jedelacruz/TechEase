@@ -1,9 +1,45 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #define CATEGORIES 5
 #define PRODUCTS 5
 #define SUBPRODUCTS 3
+
+// validate integer
+int getValidatedIntInput(const char* prompt) {
+    int value;
+    char buffer[100];
+    while (1) {
+        printf("%s", prompt);
+        if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+            char *endptr;
+            value = strtol(buffer, &endptr, 10);
+            if (endptr != buffer && *endptr == '\n') {
+                return value;
+            }
+        }
+        printf("Invalid input. Please enter a valid integer.\n");
+    }
+}
+
+// validate float
+float getValidatedFloatInput(const char* prompt) {
+    float value;
+    char buffer[100];
+    while (1) {
+        printf("%s", prompt);
+        if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+            char *endptr;
+            value = strtof(buffer, &endptr);
+            if (endptr != buffer && *endptr == '\n') {
+                return value;
+            }
+        }
+        printf("Invalid input. Please enter a valid number.\n");
+    }
+}
 
 int main() {
     int categoryin, productin, subproductsin, isPWDorSenior, quantity;
@@ -143,7 +179,6 @@ int main() {
     float cartPrices[100];
     int cartQuantities[100];
 
-
     int mainLoop = 1;
     while (mainLoop) {
         if (cartCount == 0) {
@@ -163,7 +198,7 @@ int main() {
 *          |_____\\___/|____/|_____|                   *\n\
 *                                                      *\n\
 *                                                      *\n\
-*             Where you can shop with ease...                *\n\
+*             Where you can shop with ease...          *\n\
 *                                                      *\n\
 *    ⚡ Mobile  |  💻 Laptops  |  🔧 PC Parts          *\n\
 *    🌐 Network |  🖨️ Printers                         *\n\
@@ -177,10 +212,8 @@ int main() {
         printf("2. View Cart\n");
         printf("3. Checkout\n");
         printf("0. Exit\n");
-        
-        int choice;
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
+
+        int choice = getValidatedIntInput("\nEnter your choice: ");
         
         if (choice == 0) {
             break;
@@ -196,8 +229,7 @@ int main() {
                     }
                     printf("0. Back to Main Menu\n");
 
-                    printf("\nEnter Category (1-5) or 0 to go back: ");
-                    scanf("%d", &categoryin);
+                    categoryin = getValidatedIntInput("\nEnter Category (1-5) or 0 to go back: ");
 
                     if (categoryin == 0) {
                         break;
@@ -213,8 +245,7 @@ int main() {
                         printf("%d. %s\n", i + 1, products[selectedCategory][i]);
                     }
 
-                    printf("\nEnter Product (1-5): ");
-                    scanf("%d", &productin);
+                    productin = getValidatedIntInput("\nEnter Product (1-5): ");
 
                     if (productin < 1 || productin > PRODUCTS) {
                         printf("Invalid product. Please try again.\n");
@@ -232,8 +263,7 @@ int main() {
                         }
                     }
 
-                    printf("\nEnter Subproduct (1-3): ");
-                    scanf("%d", &subproductsin);
+                    subproductsin = getValidatedIntInput("\nEnter Subproduct (1-3): ");
 
                     if (subproductsin < 1 || subproductsin > SUBPRODUCTS) {
                         printf("Invalid subproduct. Please try again.\n");
@@ -252,8 +282,7 @@ int main() {
                            products[selectedCategory][selectedProduct],
                            prices[selectedCategory][selectedProduct][selectedSubproduct]);
 
-                    printf("\nEnter Quantity: ");
-                    scanf("%d", &quantity);
+                    quantity = getValidatedIntInput("\nEnter Quantity: ");
 
                     if (quantity > stock[selectedCategory][selectedProduct][selectedSubproduct]) {
                         printf("Sorry, we only have %d in stock.\n", 
@@ -276,9 +305,7 @@ int main() {
                     printf("1. Continue Shopping\n");
                     printf("2. Back to Main Menu\n");
                     
-                    int nextAction;
-                    printf("Enter your choice: ");
-                    scanf("%d", &nextAction);
+                    int nextAction = getValidatedIntInput("Enter your choice: ");
                     
                     if (nextAction == 2) {
                         break;
@@ -290,97 +317,91 @@ int main() {
             }
             
             case 2: {
-    while (cartCount > 0) {
-        printf("\n=== Current Cart ===\n");
-        for (int i = 0; i < cartCount; i++) {
-            printf("%d. %s - Php %.2f x %d\n", i + 1, cart[i], cartPrices[i], cartQuantities[i]);
-        }
-        printf("====================\n");
-        printf("Total: Php %.2f\n", total);
+                while (cartCount > 0) {
+                    printf("\n=== Current Cart ===\n");
+                    for (int i = 0; i < cartCount; i++) {
+                        printf("%d. %s - Php %.2f x %d\n", i + 1, cart[i], cartPrices[i], cartQuantities[i]);
+                    }
+                    printf("====================\n\n");
+                    printf("Total: Php %.2f\n", total);
 
-        printf("\n1. Remove item from cart\n");
-        printf("2. Continue shopping\n");
-        printf("3. Proceed to checkout\n");
-        printf("0. Back to main menu\n");
-        
-        int cartChoice;
-        printf("Enter your choice: ");
-        scanf("%d", &cartChoice);
+                    printf("\n1. Remove item from cart\n");
+                    printf("2. Continue shopping\n");
+                    printf("3. Proceed to checkout\n");
+                    printf("0. Back to main menu\n");
+                    
+                    int cartChoice = getValidatedIntInput("Enter your choice: ");
 
-        if (cartChoice == 0) {
-            break;
-        } else if (cartChoice == 2) {
-            break;
-        } else if (cartChoice == 3) {
-            goto checkout;
-        } else if (cartChoice == 1) {
-            int removeIndex, removeQuantity;
-            printf("\nEnter the item number to remove from cart: ");
-            scanf("%d", &removeIndex);
-            removeIndex--;
+                    if (cartChoice == 0) {
+                        break;
+                    } else if (cartChoice == 2) {
+                        break;
+                    } else if (cartChoice == 3) {
+                        goto checkout;
+                    } else if (cartChoice == 1) {
+                        int removeIndex, removeQuantity;
+                        removeIndex = getValidatedIntInput("\nEnter the item number to remove from cart: ");
+                        removeIndex--;
 
-            if (removeIndex < 0 || removeIndex >= cartCount) {
-                printf("Invalid item number. Please try again.\n");
-                continue;
-            }
+                        if (removeIndex < 0 || removeIndex >= cartCount) {
+                            printf("Invalid item number. Please try again.\n");
+                            continue;
+                        }
 
-            printf("Enter the quantity to remove: ");
-            scanf("%d", &removeQuantity);
+                        removeQuantity = getValidatedIntInput("Enter the quantity to remove: ");
 
-            if (removeQuantity < 1 || removeQuantity > cartQuantities[removeIndex]) {
-                printf("Invalid quantity. Please try again.\n");
-                continue;
-            }
+                        if (removeQuantity < 1 || removeQuantity > cartQuantities[removeIndex]) {
+                            printf("Invalid quantity. Please try again.\n");
+                            continue;
+                        }
 
-            // amount tas subtract
-            float itemTotal = cartPrices[removeIndex] * removeQuantity;
-            total -= itemTotal;
+                        // amount tas subtract
+                        float itemTotal = cartPrices[removeIndex] * removeQuantity;
+                        total -= itemTotal;
 
-            // restore if hindi narmove item
-            char itemName[100];
-            strcpy(itemName, cart[removeIndex]);
-            
-            // update array stock
-            for (int i = 0; i < CATEGORIES; i++) {
-                for (int j = 0; j < PRODUCTS; j++) {
-                    if (strstr(itemName, products[i][j]) != NULL) {
-                        for (int k = 0; k < SUBPRODUCTS; k++) {
-                            if (strstr(itemName, subproducts[i][j][k]) != NULL) {
-                                // Restore the stock
-                                stock[i][j][k] += removeQuantity;
-                                printf("Stock restored: %d items returned to inventory\n", removeQuantity);
-                                break;
+                        // restore if hindi narmove item
+                        char itemName[100];
+                        strcpy(itemName, cart[removeIndex]);
+                        
+                        // update array stock
+                        for (int i = 0; i < CATEGORIES; i++) {
+                            for (int j = 0; j < PRODUCTS; j++) {
+                                if (strstr(itemName, products[i][j]) != NULL) {
+                                    for (int k = 0; k < SUBPRODUCTS; k++) {
+                                        if (strstr(itemName, subproducts[i][j][k]) != NULL) {
+                                            // Restore the stock
+                                            stock[i][j][k] += removeQuantity;
+                                            printf("Stock restored: %d items returned to inventory\n", removeQuantity);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
                             }
                         }
-                        break;
+
+                        // remove || update 
+                        if (removeQuantity == cartQuantities[removeIndex]) {
+                            // remove item
+                            for (int i = removeIndex; i < cartCount - 1; i++) {
+                                strcpy(cart[i], cart[i + 1]);
+                                cartPrices[i] = cartPrices[i + 1];
+                                cartQuantities[i] = cartQuantities[i + 1];
+                            }
+                            cartCount--;
+                            printf("Item removed from cart.\n");
+                        } else {
+                            // sa quantity
+                            cartQuantities[removeIndex] -= removeQuantity;
+                            printf("Quantity updated in cart.\n");
+                        }
                     }
                 }
-            }
-
-            // remove || update 
-            if (removeQuantity == cartQuantities[removeIndex]) {
-                // remove item
-                for (int i = removeIndex; i < cartCount - 1; i++) {
-                    strcpy(cart[i], cart[i + 1]);
-                    cartPrices[i] = cartPrices[i + 1];
-                    cartQuantities[i] = cartQuantities[i + 1];
+                if (cartCount == 0) {
+                    printf("\nYour cart is empty! Returning to main menu...\n");
                 }
-                cartCount--;
-                printf("Item removed from cart.\n");
-            } else {
-                
-                
-                        // sa quantity
-                cartQuantities[removeIndex] -= removeQuantity;
-                printf("Quantity updated in cart.\n");
+                break;
             }
-        }
-    }
-    if (cartCount == 0) {
-        printf("\nYour cart is empty! Returning to main menu...\n");
-    }
-    break;
-}
             
             case 3: {
                 checkout:
@@ -395,8 +416,7 @@ int main() {
                 }
                 printf("Total before discount: Php %.2f\n", total);
 
-                printf("\nAre you a PWD or Senior Citizen? (1 for Yes, 0 for No): ");
-                scanf("%d", &isPWDorSenior);
+                isPWDorSenior = getValidatedIntInput("\nAre you a PWD or Senior Citizen? (1 for Yes, 0 for No): ");
 
                 if (isPWDorSenior == 1) {
                     float discount = total * 0.20;
@@ -410,10 +430,25 @@ int main() {
                 printf("Total after tax: Php %.2f\n", total);
                 printf("================\n");
 
-                cartCount = 0;
-                total = 0;
-               printf("\nThank you for your purchase! Returning to main menu...\n");
+                // user bayad
+                float amount = getValidatedFloatInput("\nEnter the amount: ");
+
+               // if kasya pera
+                if (amount >= total) {
+                    float change = amount - total;
+                    printf("Amount given: Php %.2f\n", amount);
+                    printf("Change: Php %.2f\n", change);
+                    cartCount = 0;
+                    total = 0;
+                    printf("\nThank you for your purchase! Returning to main menu...\n");
+                } else {
+                    printf("Insufficient funds! Please enter a sufficient amount.\n");
+                }
+                printf("================\n\n");
                 break;
+                
+
+                
             }
             
             default:
