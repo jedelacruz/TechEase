@@ -274,8 +274,7 @@ int main() {
 
                     printf("\nItem added to cart successfully!\n");
                     printf("1. Continue Shopping\n");
-                    printf("2. View Cart\n");
-                    printf("3. Back to Main Menu\n");
+                    printf("2. Back to Main Menu\n");
                     
                     int nextAction;
                     printf("Enter your choice: ");
